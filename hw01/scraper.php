@@ -8,12 +8,13 @@
 	<body>
 		<?php
 			$ISBN = str_replace("-","",$_POST["isbn"]);
-			
-			if(preg_match("/\d{9}(?:\d|X)/", $ISBN)){
+			$price = $_POST["price"];			
+
+			if(preg_match("/\d{9}(?:\d|X)/", $ISBN) && ($price >= 0.00 && $price <= 200.00)){
 				echo $ISBN;
 				
 				echo "</br>";	
-				$poem = fopen("poem.txt", "r");
+				$poem = fopen("http://www.amazon.com/exec/obidos/ISBN=".$ISBN, "r");
 				while(($tmp = fgets($poem, 4096)) !== false){
 					echo $tmp . "</br>";
 				}
