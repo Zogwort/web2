@@ -2,7 +2,7 @@
 	$has_error=FALSE;
 	$price_error= $isbn_error= '';
 	if (array_key_exists('isbn',$_POST)) {
-		
+			
 		// the form was posted so we need to validate it
 		$_POST['isbn'] = str_replace(" ", "",$_POST['isbn']);
 		$_POST['isbn'] = str_replace("-", "",$_POST['isbn']);
@@ -10,6 +10,10 @@
 			$isbn_error= 'Invalid ISBN';
 			$has_error= TRUE;
 		}
+		if ($_POST['condition'] != 4 && $_POST['condition'] != 3 && $_POST['condition'] != 2 && $_POST['condition'] !=1){
+			$has_error= TRUE;
+			
+		}		
 		if ($_POST['price'] > 200.00) {
 			$price_error= 'Price too High';
 			$has_error= TRUE;
@@ -19,7 +23,20 @@
 			$has_error= TRUE;
 			}	
 		}
-	$title= $has_error ? 'Book Form' : 'Book Information';
+	
+		for($i=0;$i<10;$i++){
+			$total += $_POST['isbn'][10-$i] * $i;}
+		
+		for($i=1;$i<=10;$i++){
+			$total2 += $_POST['isbn'][$i] * $i;
+		}
+		
+		if($total % 11 != 0 && $total2 % 11 != 0){
+			$isbn_error = "total is $total total2 is $total2";
+			$has_error= TRUE;
+		}
+		
+		$title= $has_error ? 'Book Form' : 'Book Information';
 ?>
 <!DOCTYPE html>
 <html>
@@ -40,7 +57,6 @@
 	?>
 			<h1>Book Information</h1>
 			<p>Please enter the following information:</p>
-
 			<form method="post" action="sell.php" onsubmit="return checkTheForm()">
 				<label class="grid_1">ISBN:</label>
 				<input class="grid_2" type="text" id="isbn" name="isbn"/>
@@ -50,9 +66,10 @@
 
 				<label class="grid_1">Condition:</label>
 				<select class="grid_1" id="condition" name="condition">
-					<option id="Like New">Like New</option>
-					<option id="Good">Good</option>
-					<option id="Fair">Fair</option>
+					<option value="4">Excellent</option>
+					<option value="3">Good</option>
+					<option value="2">Fair</option>
+					<option value="1">Poor</option>
 				</select>
 				</br></br>
 		
@@ -84,15 +101,15 @@
 		<p>ISBN: <?php echo $_POST['isbn']; ?></p>
 		<p>Author(s): <?php 
 			for($i = 0;$i < count($author);$i++) {
-    			echo $author[$i];
+    			echo htmlspecialchars($author[$i], ENT_QUOTES, 'UTF-8');
 				if($i !== (count($author)-1)){
 					echo", ";
 				}
 			} 		
 		?> </p>
-		<p>Title: <?php echo $bookTitle ?> </p>
-		<p>Year/Date: <?php echo $year ?> </p>
-		<p>Publisher: <?php echo $publisher ?> </p>	
+		<p>Title: <?php echo  htmlspecialchars($bookTitle, ENT_QUOTES, 'UTF-8');?> </p>
+		<p>Year/Date: <?php echo htmlspecialchars($year, ENT_QUOTES, 'UTF-8'); ?> </p>
+		<p>Publisher: <?php echo htmlspecialchars($publisher, ENT_QUOTES, 'UTF-8'); ?> </p>	
 	<?php
 	}
 	?>
